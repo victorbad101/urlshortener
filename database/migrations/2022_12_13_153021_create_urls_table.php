@@ -15,7 +15,9 @@ return new class extends Migration
     {
         Schema::create('urls', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('url_name');
+            $table->integer('url_visits')->nullable();
             $table->string('slug')->unique();
             $table->timestamps();
         });

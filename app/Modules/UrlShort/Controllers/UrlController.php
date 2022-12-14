@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\UrlShort\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Auth\Models\User;
 use App\Modules\UrlShort\Models\Url;
 use App\Modules\UrlShort\Requests\UrlRequest;
 use App\Modules\UrlShort\Services\ShortUrlCreateService;
@@ -24,7 +25,8 @@ class UrlController extends Controller
     public function index(): View
     {
         return View('url.index', [
-            'urls' => Url::all()
+            'urls' => Url::all(),
+            'users' => User::all()
         ]);
     }
 
