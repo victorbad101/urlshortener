@@ -3,12 +3,11 @@
         @foreach($urls as $url)
             <tr>
                 <th>URL</th>
-                <th>URL SHORT</th>
             </tr>
             <tr>
-                <th>{{ $url->url_name }}</th>
-                <th>{{ $url->url_short }}</th>
+                <th><a href="{{ route('test', $url->id) }}">Short.ly/{{ $url->slug }}</a></th>
             </tr>
         @endforeach
     </table>
+    <a href="{{ route('url.create') }}">Create</a>
 </x-app>

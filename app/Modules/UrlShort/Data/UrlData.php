@@ -11,7 +11,6 @@ class UrlData extends Data
 {
     public function __construct(
         public string $url,
-        public string $urlShort
     ) {
     }
 
@@ -19,7 +18,6 @@ class UrlData extends Data
     {
         return new static(
             $request->url_name,
-            $request->url_short
         );
     }
 }

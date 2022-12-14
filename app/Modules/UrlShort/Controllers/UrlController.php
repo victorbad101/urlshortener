@@ -7,6 +7,7 @@ namespace App\Modules\UrlShort\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\UrlShort\Models\Url;
 use App\Modules\UrlShort\Requests\UrlRequest;
+use App\Modules\UrlShort\Services\ShortUrlCreateService;
 use App\Modules\UrlShort\Services\UrlRegisterService;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
@@ -15,7 +16,8 @@ use Illuminate\View\View;
 class UrlController extends Controller
 {
     public function __construct(
-        private UrlRegisterService $registerService
+        private UrlRegisterService $registerService,
+        private ShortUrlCreateService $createService
     ) {
     }
 
@@ -33,8 +35,13 @@ class UrlController extends Controller
 
     public function store(UrlRequest $request): RedirectResponse
     {
-        $this->registerService->register($request);
+        $register = $this->registerService->register($request);
+
+        if ($register) {
+            $this->createService->create($register->id);
+        }
 
         return redirect(RouteServiceProvider::HOME);
     }
+
 }
