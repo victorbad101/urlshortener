@@ -19,19 +19,27 @@ Route::middleware('web')->controller(SignInController::class)->group(function ()
     Route::delete('/user/{id}/logout', 'destroy')->name('user.signout');
 });
 
-Route::middleware('web')->controller(UrlController::class)->group(function () {
+Route::controller(UrlController::class)->group(function () {
+    Route::middleware('auth')->group(function () {
+        Route::get('/url/create', 'create')->name('url.create');
+        Route::post('/url/create', 'store')->name('url.store');
+        Route::get('/url/{id}/show', 'show')->name('url.show');
+        Route::get('/url/{slug}/edit', 'edit')->name('url.edit');
+        Route::put('/url/{slug}', 'update')->name('url.update');
+    });
     Route::get('/', 'index');
-    Route::get('/url/create', 'create')->name('url.create');
-    Route::post('/url/create', 'store')->name('url.store');
 });
 
 Route::get('/short.ly/{slug}', function ($slug) {
     $url = Url::where('slug', $slug)->first();
+
     if (! isset($url)) {
         abort(404);
     }
+
     $url->url_visits++;
     $url->save();
+
     return redirect($url->url_name);
 })->name('test');
 

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Illuminate\Validation\ValidationException;
 
 class Authenticate extends Middleware
 {
@@ -14,6 +15,9 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
+        if (! auth()->check()) {
+            throw ValidationException::withMessages(['You are not logged in']);
+        }
         if (! $request->expectsJson()) {
             return route('login');
         }

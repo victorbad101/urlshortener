@@ -6,8 +6,11 @@ namespace App\Modules\UrlShort\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Auth\Models\User;
+use App\Modules\UrlShort\Data\UrlUpdateData;
 use App\Modules\UrlShort\Models\Url;
+use App\Modules\UrlShort\Requests\ShortUrlUpdateService;
 use App\Modules\UrlShort\Requests\UrlRequest;
+use App\Modules\UrlShort\Requests\UrlUpdateRequest;
 use App\Modules\UrlShort\Services\ShortUrlCreateService;
 use App\Modules\UrlShort\Services\UrlRegisterService;
 use App\Providers\RouteServiceProvider;
@@ -18,7 +21,8 @@ class UrlController extends Controller
 {
     public function __construct(
         private UrlRegisterService $registerService,
-        private ShortUrlCreateService $createService
+        private ShortUrlCreateService $createService,
+        private ShortUrlUpdateService $updateService
     ) {
     }
 
@@ -42,6 +46,31 @@ class UrlController extends Controller
         if ($register) {
             $this->createService->create($register->id);
         }
+
+        return redirect(RouteServiceProvider::HOME);
+    }
+
+    public function show(): View
+    {
+        $urls = Url::where('user_id', auth()->id())->get();
+
+        return View('url.show', [
+            'urls' => $urls
+        ]);
+    }
+
+    public function edit($id): View
+    {
+        $url = Url::where('slug', $id)->first();
+
+        return View('url.edit', [
+            'url' => $url
+        ]);
+    }
+
+    public function update($id, UrlUpdateRequest $request)
+    {
+        $this->updateService->update($id, UrlUpdateData::fromRequest($request));
 
         return redirect(RouteServiceProvider::HOME);
     }
